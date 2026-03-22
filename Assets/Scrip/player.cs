@@ -15,7 +15,7 @@ public class player : MonoBehaviour
 
     void Update()
     {
-        // เช็คว่าติดพื้นอยู่ไหม (แบบง่าย)
+        // เช็คว่าติดพื้นอยู่ไหม
         if (Physics.Raycast(transform.position, Vector3.down, 1.1f))
         {
             isGrounded = true;
@@ -28,17 +28,31 @@ public class player : MonoBehaviour
         // กระโดด
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            float mass = rb.mass;
+            float acceleration = jumpForce;
+
+            float force = mass * acceleration;
+
+            rb.AddForce(Vector3.up * force, ForceMode.Impulse);
         }
     }
 
     void FixedUpdate()
     {
-        float moveZ = Input.GetAxis("Horizontal"); // A, D
+        float moveX = Input.GetAxis("Horizontal"); // A, D
 
-        Vector3 move = new Vector3(moveZ, 0, 0); // ขยับแค่แกน X
+        Vector3 move = new Vector3(moveX, 0, 0); // ขยับแค่แกน X
 
         rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
+
+        if (moveX > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0); // หันขวา
+        }
+        else if (moveX < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -90, 0); // หันซ้าย
+        }
     }
    
 }
