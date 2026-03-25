@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerLose : MonoBehaviour
 {
-    [SerializeField] private GameObject loseUI; // 👈 ลาก UI มาใส่ตรงนี้
+    [SerializeField] private GameObject loseUI;
     private Rigidbody rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        loseUI.SetActive(false); // เริ่มเกมยังไม่แพ้
+
+        if (loseUI != null)
+            loseUI.SetActive(false);
     }
 
     void OnTriggerEnter(Collider other)
@@ -21,8 +24,21 @@ public class PlayerLose : MonoBehaviour
 
     void Lose()
     {
-        loseUI.SetActive(true); // แสดง UI
+        if (loseUI != null)
+        {
+            loseUI.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Lose UI ยังไม่ได้ใส่ใน Inspector!");
+        }
 
-        Time.timeScale = 0f; // ❗ หยุดเกม
+        Time.timeScale = 0f;
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
